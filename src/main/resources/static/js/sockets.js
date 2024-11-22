@@ -4,6 +4,13 @@ const stompClient = new StompJs.Client({
 
 stompClient.onConnect = (frame) => {
     console.log('Connected: ' + frame);
+    stompClient.subscribe("topic/test", (message) => {
+        if (message.body) {
+            console.log(message.body)
+        } else {
+            console.log("empty message delivered")
+        }
+    })
 }
 
 stompClient.onWebSocketError = (error) => {
