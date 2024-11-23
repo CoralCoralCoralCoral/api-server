@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Built UI ###
+src/main/resources/static/
