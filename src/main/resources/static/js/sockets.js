@@ -1,17 +1,13 @@
-const stompClient = new StompJs.Client({
-    brokerURL: window.location.origin + '/websocket'
-});
+var sock = new SockJS(window.location.origin + '/websocket')
 
-stompClient.onConnect = (frame) => {
+const stompClient = Stomp.over(sock)
+
+stompClient.connect({}, (frame) => {
     console.log('Connected: ' + frame);
-    stompClient.subscribe("topic/test", (message) => {
-        if (message.body) {
-            console.log(message.body)
-        } else {
-            console.log("empty message delivered")
-        }
+    stompClient.subscribe("/topic/test", function (message) {
+        console.log(JSON.parse(message.body));
     })
-}
+})
 
 stompClient.onWebSocketError = (error) => {
     console.error('Error with websocket', error);
@@ -22,4 +18,4 @@ stompClient.onStompError = (frame) => {
     console.error('Additional details: ' + frame.body);
 };
 
-stompClient.activate();
+// stompClient.activate();
