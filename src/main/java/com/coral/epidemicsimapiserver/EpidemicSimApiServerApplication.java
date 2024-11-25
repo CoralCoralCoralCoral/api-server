@@ -23,6 +23,9 @@ public class EpidemicSimApiServerApplication {
             channel.exchangeDeclare("init-game", "topic");
             channel.queueDeclare("init-game", false, false, false, null);
             channel.queueBind("init-game", "init-game", "#");
+        } catch (Exception e) {
+            System.err.println("Error: Unable to initialise RabbitMQ init-game exchange");
+            throw new RuntimeException(e);
         }
     }
 
