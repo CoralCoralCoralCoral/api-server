@@ -1,6 +1,7 @@
 package com.coral.epidemicsimapiserver.controller;
 
 import com.coral.epidemicsimapiserver.EpidemicSimApiServerApplication;
+import com.coral.epidemicsimapiserver.repository.CreateGameClientResponse;
 import com.coral.epidemicsimapiserver.repository.CreateGamePacket;
 import com.coral.epidemicsimapiserver.repository.PathogenConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -50,6 +51,17 @@ public class GameController {
                 EpidemicSimApiServerApplication.SERVER_UUID.toString() + '.' + createGamePacket.id(),
                 json);
 
-        return new ResponseEntity<>(json, HttpStatus.OK);
+        CreateGameClientResponse response = new CreateGameClientResponse(
+                createGamePacket.id(),
+                EpidemicSimApiServerApplication.SERVER_UUID.toString()
+        );
+        String responseJson = null;
+        try {
+            responseJson = objectMapper.writeValueAsString(response);
+        } catch (JsonProcessingException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(responseJson, HttpStatus.OK);
     }
 }
