@@ -1,7 +1,9 @@
 package com.coral.epidemicsimapiserver.repository;
 
 public record CreateGamePacket(
-        String SERVER_UUID,
-        String SIMULATION_UUID
+        String id,
+        int time_step,
+        int num_agents,
+        PathogenConfig pathogen
 ) {
 }

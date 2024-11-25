@@ -2,6 +2,7 @@ package com.coral.epidemicsimapiserver.controller;
 
 import com.coral.epidemicsimapiserver.EpidemicSimApiServerApplication;
 import com.coral.epidemicsimapiserver.repository.CreateGamePacket;
+import com.coral.epidemicsimapiserver.repository.PathogenConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -24,8 +25,15 @@ public class GameController {
     @PostMapping("/create")
     public ResponseEntity<String> createGame() {
         CreateGamePacket createGamePacket = new CreateGamePacket(
-                EpidemicSimApiServerApplication.SERVER_UUID.toString(),
-                UUID.randomUUID().toString());
+                UUID.randomUUID().toString(),
+                15 * 60 * 1000,
+                150000,
+                new PathogenConfig(
+                        new double[] {3 * 24 * 60 * 60 * 1000, 8 * 60 * 60 * 1000},
+                        new double[] {7 * 24 * 60 * 60 * 1000, 8 * 60 * 60 * 1000},
+                        new double[] {330 * 24 * 60 * 60 * 1000f, 90 * 24 * 60 * 60 * 1000f},
+                        new double[] {250, 100}
+                ));
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json = null;
@@ -39,7 +47,7 @@ public class GameController {
 
         rabbitTemplate.convertAndSend(
                 "init-game",
-                createGamePacket.SERVER_UUID() + '.' + createGamePacket.SIMULATION_UUID(),
+                EpidemicSimApiServerApplication.SERVER_UUID.toString() + '.' + createGamePacket.id(),
                 json);
 
         return new ResponseEntity<>(json, HttpStatus.OK);
