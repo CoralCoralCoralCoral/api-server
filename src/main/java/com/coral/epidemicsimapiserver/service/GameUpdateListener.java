@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 @Service
@@ -22,8 +23,8 @@ public class GameUpdateListener {
     @RabbitListener(queues = RabbitMQConfiguration.GAME_UPDATE_QUEUE_NAME)
     public void listen(Message message) throws Exception {
         HashMap<String, Metrics> metrics = objectMapper.readValue(message.getBody(), HashMap.class);
-        System.out.println(message.getMessageProperties().getReceivedRoutingKey() + "---" + metrics.get("GLOBAL"));
         String gameId = message.getMessageProperties().getReceivedRoutingKey().split("\\.")[1];
-        messagingTemplate.convertAndSend("/topic/game-update/" + gameId, message.getBody());
+        System.out.println(gameId + "---" + metrics.get("GLOBAL"));
+        messagingTemplate.convertAndSend("/topic/game-update/" + gameId, metrics);
     }
 }
