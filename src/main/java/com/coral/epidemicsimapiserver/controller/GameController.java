@@ -30,10 +30,14 @@ public class GameController {
                 15 * 60 * 1000,
                 150000,
                 new PathogenConfig(
-                        new double[] {3 * 24 * 60 * 60 * 1000, 8 * 60 * 60 * 1000},
-                        new double[] {7 * 24 * 60 * 60 * 1000, 8 * 60 * 60 * 1000},
-                        new double[] {330 * 24 * 60 * 60 * 1000f, 90 * 24 * 60 * 60 * 1000f},
-                        new double[] {250, 100}
+                        new double[]{3 * 24 * 60 * 60 * 1000, 8 * 60 * 60 * 1000},
+                        new double[]{7 * 24 * 60 * 60 * 1000, 8 * 60 * 60 * 1000},
+                        new double[]{330 * 24 * 60 * 60 * 1000f, 90 * 24 * 60 * 60 * 1000f},
+                        new double[]{3 * 24 * 60 * 60 * 1000, 8 * 60 * 60 * 1000},
+                        new double[]{7 * 24 * 60 * 60 * 1000, 3 * 24 * 60 * 60 * 1000},
+                        new double[]{250, 100},
+                        0,
+                        0
                 ));
 
         ObjectMapper objectMapper = new ObjectMapper();
