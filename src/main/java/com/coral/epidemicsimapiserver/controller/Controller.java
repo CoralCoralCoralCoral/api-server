@@ -17,7 +17,7 @@ public class Controller {
         return new RedirectView("/index.html");
     }
 
-    @MessageMapping("/game/{id}/commands")
+    @MessageMapping("/game/{id}/command")
     public void forwardCommands(@Payload byte[] payload, @PathVariable int id) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate();
         rabbitTemplate.convertAndSend(
