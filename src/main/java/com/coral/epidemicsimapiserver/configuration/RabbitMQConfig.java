@@ -55,6 +55,7 @@ public class RabbitMQConfig {
 
     @Bean
     public ConnectionFactory connectionFactory() {
+        System.out.println("THIS IS THE RMQ_URI:" + RMQ_URI);
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
         connectionFactory.setUri(RMQ_URI); // Use the URI provided in application.properties
         return connectionFactory.getRabbitConnectionFactory();
