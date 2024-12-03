@@ -3,20 +3,17 @@ package com.coral.epidemicsimapiserver.configuration;
 import com.rabbitmq.client.ConnectionFactory;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
-import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.UUID;
 
 
 @Configuration
 public class RabbitMQConfig {
 
     @Value("${RMQ_URI}")
-    private String rabbitMqUri;
+    private String RMQ_URI;
 
     public static final String GAME_UPDATE_QUEUE_NAME = "game_update";
     private static final String GAME_UPDATE_EXCHANGE_NAME = "game-updates";
@@ -59,9 +56,15 @@ public class RabbitMQConfig {
     @Bean
     public ConnectionFactory connectionFactory() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
-        connectionFactory.setUri(rabbitMqUri); // Use the URI provided in application.properties
+        connectionFactory.setUri(RMQ_URI); // Use the URI provided in application.properties
         return connectionFactory.getRabbitConnectionFactory();
     }
 
+    @Bean
+    public RabbitProperties rabbitProperties() {
+        RabbitProperties properties = new RabbitProperties();
+        properties.setAddresses(RMQ_URI);
+        return properties;
+    }
 
 }
