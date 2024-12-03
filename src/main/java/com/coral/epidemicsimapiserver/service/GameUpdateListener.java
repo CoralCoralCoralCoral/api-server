@@ -24,7 +24,6 @@ public class GameUpdateListener {
     public void listen(Message message) throws Exception {
         HashMap<String, Metrics> metrics = objectMapper.readValue(message.getBody(), HashMap.class);
         String gameId = message.getMessageProperties().getReceivedRoutingKey().split("\\.")[1];
-        System.out.println(gameId + "---" + metrics.get("GLOBAL"));
         messagingTemplate.convertAndSend("/topic/game-update/" + gameId, metrics);
     }
 }
