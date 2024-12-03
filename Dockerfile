@@ -1,0 +1,36 @@
+# Use a base image with Gradle and OpenJDK 17 installed
+FROM gradle:8.10.2-jdk17 AS build
+
+# Set working directory
+WORKDIR /app
+
+# Copy your Gradle build files (e.g., build.gradle, settings.gradle) to the container
+COPY build.gradle settings.gradle ./
+
+# Copy the Gradle wrapper (if present) to the container
+COPY gradlew gradlew
+COPY gradle gradle
+# Now copy the source code and build the app
+COPY src src
+# Download dependencies (this will cache dependencies unless build.gradle changes)
+RUN chmod +x ./gradlew
+RUN ./gradlew bootJar --no-daemon --stacktrace
+
+
+
+# Build the Spring Boot application ...
+
+# Use a smaller JDK 17 image to run the Spring Boot application
+FROM openjdk:17-jdk-slim AS runtime
+
+# Set working directory for runtime container
+WORKDIR /app
+
+# Copy the jar file from the build stage to the runtime container
+COPY --from=build /app/build/libs/*.jar app.jar
+
+# Expose the application port (default Spring Boot is 8080)
+EXPOSE 8080
+
+# Run the Spring Boot application
+ENTRYPOINT ["java", "-jar", "app.jar"]
