@@ -1,26 +1,21 @@
 package com.coral.epidemicsimapiserver.configuration;
 
-import com.rabbitmq.client.ConnectionFactory;
+import com.coral.epidemicsimapiserver.EpidemicSimApiServerApplication;
 import org.springframework.amqp.core.*;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
 public class RabbitMQConfig {
-
-    @Value("${RMQ_URI}")
-    private String RMQ_URI;
-
-    public static final String GAME_UPDATE_QUEUE_NAME = "game_update";
-    private static final String GAME_UPDATE_EXCHANGE_NAME = "game-updates";
-    private static final String GAME_UPDATE_ROUTING_KEY = "test";
+    public static final String GAME_UPDATE_QUEUE_NAME = "game-metrics-1";
+    private static final String GAME_UPDATE_EXCHANGE_NAME = "game-metrics";
+    private static final String GAME_UPDATE_ROUTING_KEY = EpidemicSimApiServerApplication.SERVER_UUID + ".*";
 
     private static final String INIT_GAME_QUEUE_NAME = "init_game";
     private static final String INIT_GAME_EXCHANGE_NAME = "init-game";
+
+    public static final String GAME_COMMAND_EXCHANGE_NAME = "game-commands";
 
 
     @Bean
@@ -29,13 +24,24 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public Exchange gameCommandsQueue() {
+        return new ExchangeBuilder(GAME_COMMAND_EXCHANGE_NAME, "topic").durable(false).autoDelete().build();
+    }
+
+    @Bean
     public TopicExchange exchange() {
         return new ExchangeBuilder(GAME_UPDATE_EXCHANGE_NAME, "topic").durable(false).autoDelete().build();
     }
 
     @Bean
-    public Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(GAME_UPDATE_ROUTING_KEY);
+    public Binding binding(Queue queue, TopicExchange exchange) throws Exception{
+        String routingKey = "";
+        if (exchange.getName().equals(GAME_UPDATE_EXCHANGE_NAME)) {
+            routingKey = GAME_UPDATE_ROUTING_KEY;
+        } else {
+            throw new Exception("No routing key associated to exchange");
+        }
+        return BindingBuilder.bind(queue).to(exchange).with(routingKey);
     }
 
     @Bean
@@ -52,20 +58,4 @@ public class RabbitMQConfig {
     public Binding initGameBinding(Queue initGameQueue, TopicExchange initExchange) {
         return BindingBuilder.bind(initGameQueue).to(initExchange).with("#");
     }
-
-    @Bean
-    public ConnectionFactory connectionFactory() {
-        System.out.println("THIS IS THE RMQ_URI:" + RMQ_URI);
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
-        connectionFactory.setUri(RMQ_URI); // Use the URI provided in application.properties
-        return connectionFactory.getRabbitConnectionFactory();
-    }
-
-    @Bean
-    public RabbitProperties rabbitProperties() {
-        RabbitProperties properties = new RabbitProperties();
-        properties.setAddresses(RMQ_URI);
-        return properties;
-    }
-
 }
