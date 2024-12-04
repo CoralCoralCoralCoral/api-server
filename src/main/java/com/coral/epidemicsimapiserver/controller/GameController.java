@@ -35,9 +35,10 @@ public class GameController {
                         new double[]{330 * 24 * 60 * 60 * 1000f, 90 * 24 * 60 * 60 * 1000f},
                         new double[]{3 * 24 * 60 * 60 * 1000, 8 * 60 * 60 * 1000},
                         new double[]{7 * 24 * 60 * 60 * 1000, 3 * 24 * 60 * 60 * 1000},
-                        new double[]{250, 100},
-                        0,
-                        0
+                        new double[]{500, 150},
+                        0.2,
+                        0.75,
+                        0.1
                 ));
 
         ObjectMapper objectMapper = new ObjectMapper();

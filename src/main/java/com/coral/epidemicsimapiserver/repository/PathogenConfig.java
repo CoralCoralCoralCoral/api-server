@@ -8,7 +8,8 @@ public record PathogenConfig(
         double[] hospitalization_period,
         double[] quanta_emission_rate,
         double hospitalization_probability,
-        double death_probability
+        double death_probability,
+        double asymptomatic_probability
 ) {
 
 }
