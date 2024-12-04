@@ -1,20 +1,21 @@
 package com.coral.epidemicsimapiserver.configuration;
 
-import com.coral.epidemicsimapiserver.EpidemicSimApiServerApplication;
-import com.rabbitmq.client.ConnectionFactory;
 import org.springframework.amqp.core.*;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
 public class RabbitMQConfig {
-    public static final String GAME_UPDATE_QUEUE_NAME = "game-metrics-";
-    private static final String GAME_UPDATE_EXCHANGE_NAME = "game-metrics";
-    private static final String GAME_UPDATE_ROUTING_KEY = EpidemicSimApiServerApplication.SERVER_UUID + ".*";
+    public static final String GAME_UPDATE_QUEUE_NAME = "game_update";
+    private static final String GAME_UPDATE_EXCHANGE_NAME = "game-updates";
+    private static final String GAME_UPDATE_ROUTING_KEY = "test";
+
+    private static final String INIT_GAME_QUEUE_NAME = "init_game";
+    private static final String INIT_GAME_EXCHANGE_NAME = "init-game";
 
     public static final String GAME_COMMAND_EXCHANGE_NAME = "game-commands";
+
 
     @Bean
     public Queue queue() {
@@ -42,9 +43,19 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(queue).to(exchange).with(routingKey);
     }
 
+
     @Bean
-    public ConnectionFactory connectionFactory() {
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
-        return connectionFactory.getRabbitConnectionFactory();
+    public TopicExchange initExchange() {
+        return new ExchangeBuilder(INIT_GAME_EXCHANGE_NAME, "topic").durable(false).autoDelete().build();
+    }
+
+    @Bean
+    public Queue initGameQueue() {
+        return QueueBuilder.nonDurable(INIT_GAME_QUEUE_NAME).build();
+    }
+
+    @Bean
+    public Binding initGameBinding(Queue initGameQueue, TopicExchange initExchange) {
+        return BindingBuilder.bind(initGameQueue).to(initExchange).with("#");
     }
 }
