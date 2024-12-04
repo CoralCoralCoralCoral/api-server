@@ -1,5 +1,6 @@
 package com.coral.epidemicsimapiserver.configuration;
 
+import com.coral.epidemicsimapiserver.EpidemicSimApiServerApplication;
 import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,9 +8,9 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
-    public static final String GAME_UPDATE_QUEUE_NAME = "game_update";
-    private static final String GAME_UPDATE_EXCHANGE_NAME = "game-updates";
-    private static final String GAME_UPDATE_ROUTING_KEY = "test";
+    public static final String GAME_UPDATE_QUEUE_NAME = "game-metrics-1";
+    private static final String GAME_UPDATE_EXCHANGE_NAME = "game-metrics";
+    private static final String GAME_UPDATE_ROUTING_KEY = EpidemicSimApiServerApplication.SERVER_UUID + ".*";
 
     private static final String INIT_GAME_QUEUE_NAME = "init_game";
     private static final String INIT_GAME_EXCHANGE_NAME = "init-game";
@@ -42,7 +43,6 @@ public class RabbitMQConfig {
         }
         return BindingBuilder.bind(queue).to(exchange).with(routingKey);
     }
-
 
     @Bean
     public TopicExchange initExchange() {
