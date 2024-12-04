@@ -4,13 +4,12 @@ import com.coral.epidemicsimapiserver.EpidemicSimApiServerApplication;
 import com.rabbitmq.client.ConnectionFactory;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
-public class RabbitMQConfiguration {
+public class RabbitMQConfig {
     public static final String GAME_UPDATE_QUEUE_NAME = "game-metrics-";
     private static final String GAME_UPDATE_EXCHANGE_NAME = "game-metrics";
     private static final String GAME_UPDATE_ROUTING_KEY = EpidemicSimApiServerApplication.SERVER_UUID + ".*";
