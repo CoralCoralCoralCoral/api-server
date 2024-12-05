@@ -1,3 +1,28 @@
+# Stage 1: Build the Next.js app
+FROM node:18-alpine AS nextjs-build
+
+# Declare a build argument
+ARG NEXT_PUBLIC_MAPBOX_API_KEY
+
+# Install git
+RUN apk add --no-cache git
+
+# Clone the Next.js repository
+RUN git clone https://github.com/coralCoralCoralCoral/ui.git /app
+
+# Set working directory
+WORKDIR /app
+
+# Install dependencies
+RUN npm install
+
+# Expose the environment variable for the build command
+ENV NEXT_PUBLIC_MAPBOX_API_KEY=$NEXT_PUBLIC_MAPBOX_API_KEY
+
+# Build the Next.js app
+RUN npm run build
+
+
 # Use a base image with Gradle and OpenJDK 17 installed
 FROM gradle:8.10.2-jdk17 AS build
 
@@ -12,6 +37,9 @@ COPY gradlew gradlew
 COPY gradle gradle
 # Now copy the source code and build the app
 COPY src src
+
+COPY --from=nextjs-build /app/out src/main/resources/static
+
 # Download dependencies (this will cache dependencies unless build.gradle changes)
 RUN chmod +x ./gradlew
 RUN ./gradlew bootJar --no-daemon --stacktrace
