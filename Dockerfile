@@ -10,19 +10,13 @@ RUN git clone https://github.com/coralCoralCoralCoral/ui.git /app
 # Set working directory
 WORKDIR /app
 
-# Enable secret API key
-RUN --mount=type=bind,target=. \
-  --mount=type=secret,id=NEXT_PUBLIC_MAPBOX_API_KEY,env=NEXT_PUBLIC_MAPBOX_API_KEY
-
 # Install dependencies
 RUN npm install
 
-# Expose the environment variable for the build command
-ENV NEXT_PUBLIC_MAPBOX_API_KEY=$NEXT_PUBLIC_MAPBOX_API_KEY
-
-# Build the Next.js app
-RUN npm run build
-
+# Enable secret API key and build the app
+RUN --mount=type=bind,target=. \
+  --mount=type=secret,id=NEXT_PUBLIC_MAPBOX_API_KEY,env=NEXT_PUBLIC_MAPBOX_API_KEY\
+  npm run build
 
 # Use a base image with Gradle and OpenJDK 17 installed
 FROM gradle:8.10.2-jdk17 AS build
@@ -44,8 +38,6 @@ COPY --from=nextjs-build /app/out src/main/resources/static
 # Download dependencies (this will cache dependencies unless build.gradle changes)
 RUN chmod +x ./gradlew
 RUN ./gradlew bootJar --no-daemon --stacktrace
-
-
 
 # Build the Spring Boot application ...
 
