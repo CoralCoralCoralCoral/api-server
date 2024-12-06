@@ -1,9 +1,6 @@
 # Stage 1: Build the Next.js app
 FROM node:18-alpine AS nextjs-build
 
-# Declare a build argument
-ARG NEXT_PUBLIC_MAPBOX_API_KEY
-
 # Install git
 RUN apk add --no-cache git
 
@@ -12,6 +9,10 @@ RUN git clone https://github.com/coralCoralCoralCoral/ui.git /app
 
 # Set working directory
 WORKDIR /app
+
+# Enable secret API key
+RUN --mount=type=bind,target=. \
+  --mount=type=secret,id=NEXT_PUBLIC_MAPBOX_API_KEY,env=NEXT_PUBLIC_MAPBOX_API_KEY
 
 # Install dependencies
 RUN npm install
