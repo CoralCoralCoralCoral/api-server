@@ -13,11 +13,8 @@ WORKDIR /app
 # Install dependencies
 RUN npm install
 
-# Accept the API token as a build argument
-ARG NEXT_PUBLIC_MAPBOX_API_KEY
-
-# Pass the token to the Next.js build process
-ENV NEXT_PUBLIC_MAPBOX_API_KEY=${NEXT_PUBLIC_MAPBOX_API_KEY}
+RUN --mount=type=secret,id=mapbox_api_key \
+    echo "NEXT_PUBLIC_MAPBOX_API_KEY=$(cat /run/secrets/mapbox_api_key)" > .env.production.local
 
 RUN npm run build
 
