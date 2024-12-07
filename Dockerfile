@@ -13,10 +13,13 @@ WORKDIR /app
 # Install dependencies
 RUN npm install
 
-# Enable secret API key and build the app
-RUN --mount=type=bind,target=. \
-  --mount=type=secret,id=NEXT_PUBLIC_MAPBOX_API_KEY \
-  npm run build
+# Accept the API token as a build argument
+ARG NEXT_PUBLIC_MAPBOX_API_KEY
+
+# Pass the token to the Next.js build process
+ENV NEXT_PUBLIC_MAPBOX_API_KEY=${NEXT_PUBLIC_MAPBOX_API_KEY}
+
+RUN npm run build
 
 # Use a base image with Gradle and OpenJDK 17 installed
 FROM gradle:8.10.2-jdk17 AS build
