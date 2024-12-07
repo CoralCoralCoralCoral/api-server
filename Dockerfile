@@ -1,3 +1,23 @@
+# Stage 1: Build the Next.js app
+FROM node:18-alpine AS nextjs-build
+
+# Install git
+RUN apk add --no-cache git
+
+# Clone the Next.js repository
+RUN git clone https://github.com/coralCoralCoralCoral/ui.git /app
+
+# Set working directory
+WORKDIR /app
+
+# Install dependencies
+RUN npm install
+
+# Enable secret API key and build the app
+RUN --mount=type=bind,target=. \
+  --mount=type=secret,id=NEXT_PUBLIC_MAPBOX_API_KEY,env=NEXT_PUBLIC_MAPBOX_API_KEY\
+  npm run build
+
 # Use a base image with Gradle and OpenJDK 17 installed
 FROM gradle:8.10.2-jdk17 AS build
 
@@ -12,11 +32,12 @@ COPY gradlew gradlew
 COPY gradle gradle
 # Now copy the source code and build the app
 COPY src src
+
+COPY --from=nextjs-build /app/out src/main/resources/static
+
 # Download dependencies (this will cache dependencies unless build.gradle changes)
 RUN chmod +x ./gradlew
 RUN ./gradlew bootJar --no-daemon --stacktrace
-
-
 
 # Build the Spring Boot application ...
 
