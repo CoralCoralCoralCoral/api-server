@@ -13,10 +13,10 @@ WORKDIR /app
 # Install dependencies
 RUN npm install
 
-# Enable secret API key and build the app
-RUN --mount=type=bind,target=. \
-  --mount=type=secret,id=NEXT_PUBLIC_MAPBOX_API_KEY \
-  npm run build
+RUN --mount=type=secret,id=mapbox_api_key \
+    echo "NEXT_PUBLIC_MAPBOX_API_KEY=$(cat /run/secrets/mapbox_api_key)" > .env.production.local
+
+RUN npm run build
 
 # Use a base image with Gradle and OpenJDK 17 installed
 FROM gradle:8.10.2-jdk17 AS build
