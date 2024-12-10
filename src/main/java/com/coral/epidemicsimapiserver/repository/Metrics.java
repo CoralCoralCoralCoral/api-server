@@ -1,6 +1,8 @@
 package com.coral.epidemicsimapiserver.repository;
 
 public record Metrics(
+        int day,
+
         int new_infections,
         int new_hospitalizations,
         int new_recoveries,
