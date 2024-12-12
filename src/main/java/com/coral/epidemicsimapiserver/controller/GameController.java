@@ -4,6 +4,7 @@ import com.coral.epidemicsimapiserver.EpidemicSimApiServerApplication;
 import com.coral.epidemicsimapiserver.repository.CreateGameClientResponse;
 import com.coral.epidemicsimapiserver.repository.CreateGamePacket;
 import com.coral.epidemicsimapiserver.repository.PathogenConfig;
+import com.coral.epidemicsimapiserver.configuration.RabbitMQConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -52,7 +53,7 @@ public class GameController {
         }
 
         rabbitTemplate.convertAndSend(
-                "init-game",
+                RabbitMQConfig.INIT_EXCHANGE_NAME,
                 EpidemicSimApiServerApplication.SERVER_UUID.toString() + '.' + createGamePacket.id(),
                 json);
 
