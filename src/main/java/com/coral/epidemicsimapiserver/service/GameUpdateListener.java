@@ -18,10 +18,10 @@ public class GameUpdateListener {
     @Autowired
     ObjectMapper objectMapper;
 
-    @RabbitListener(queues = RabbitMQConfig.GAME_UPDATE_QUEUE_NAME)
+    @RabbitListener(queues = RabbitMQConfig.NOTIFICATION_QUEUE_NAME)
     public void listen(Message message) throws Exception {
         HashMap<String, Object> update = objectMapper.readValue(message.getBody(), HashMap.class);
         String gameId = message.getMessageProperties().getReceivedRoutingKey().split("\\.")[1];
-        messagingTemplate.convertAndSend("/topic/game-update/" + gameId, update);
+        messagingTemplate.convertAndSend("/topic/notification/" + gameId, update);
     }
 }

@@ -25,7 +25,7 @@ public class Controller {
         System.out.println(id + "---" + payload);
 
         rabbitTemplate.convertAndSend(
-                RabbitMQConfig.GAME_COMMAND_EXCHANGE_NAME,
+                RabbitMQConfig.COMMAND_EXCHANGE_NAME,
                 EpidemicSimApiServerApplication.SERVER_UUID + "." + id,
                 payload);
     }

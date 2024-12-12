@@ -53,7 +53,7 @@ public class GameController {
         }
 
         rabbitTemplate.convertAndSend(
-                RabbitMQConfig.INIT_GAME_EXCHANGE_NAME,
+                RabbitMQConfig.INIT_EXCHANGE_NAME,
                 EpidemicSimApiServerApplication.SERVER_UUID.toString() + '.' + createGamePacket.id(),
                 json);
 
