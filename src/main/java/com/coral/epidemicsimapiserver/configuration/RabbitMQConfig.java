@@ -8,15 +8,14 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
-    public static final String GAME_UPDATE_QUEUE_NAME = "game-metrics-1";
-    private static final String GAME_UPDATE_EXCHANGE_NAME = "game-metrics";
+    public static final String GAME_UPDATE_QUEUE_NAME = "update-queue";
+    private static final String GAME_UPDATE_EXCHANGE_NAME = "update";
     private static final String GAME_UPDATE_ROUTING_KEY = EpidemicSimApiServerApplication.SERVER_UUID + ".*";
 
-    private static final String INIT_GAME_QUEUE_NAME = "init_game";
-    private static final String INIT_GAME_EXCHANGE_NAME = "init-game";
+    private static final String INIT_GAME_QUEUE_NAME = "init-queue";
+    public static final String INIT_GAME_EXCHANGE_NAME = "init";
 
-    public static final String GAME_COMMAND_EXCHANGE_NAME = "game-commands";
-
+    public static final String GAME_COMMAND_EXCHANGE_NAME = "command";
 
     @Bean
     public Queue queue() {
