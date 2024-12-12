@@ -5,11 +5,10 @@ import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
 @Configuration
 public class RabbitMQConfig {
-    public static final String GAME_UPDATE_QUEUE_NAME = "update-queue";
-    private static final String GAME_UPDATE_EXCHANGE_NAME = "update";
+    public static final String GAME_UPDATE_QUEUE_NAME = "notification-queue";
+    private static final String GAME_UPDATE_EXCHANGE_NAME = "notification";
     private static final String GAME_UPDATE_ROUTING_KEY = EpidemicSimApiServerApplication.SERVER_UUID + ".*";
 
     private static final String INIT_GAME_QUEUE_NAME = "init-queue";
@@ -33,7 +32,7 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Binding binding(Queue queue, TopicExchange exchange) throws Exception{
+    public Binding binding(Queue queue, TopicExchange exchange) throws Exception {
         String routingKey = "";
         if (exchange.getName().equals(GAME_UPDATE_EXCHANGE_NAME)) {
             routingKey = GAME_UPDATE_ROUTING_KEY;
