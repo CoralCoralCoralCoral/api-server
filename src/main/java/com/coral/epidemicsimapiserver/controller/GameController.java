@@ -3,7 +3,6 @@ package com.coral.epidemicsimapiserver.controller;
 import com.coral.epidemicsimapiserver.EpidemicSimApiServerApplication;
 import com.coral.epidemicsimapiserver.repository.CreateGameClientResponse;
 import com.coral.epidemicsimapiserver.repository.CreateGamePacket;
-import com.coral.epidemicsimapiserver.repository.PathogenConfig;
 import com.coral.epidemicsimapiserver.configuration.RabbitMQConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,17 +29,55 @@ public class GameController {
                 UUID.randomUUID().toString(),
                 15 * 60 * 1000,
                 150000,
-                new PathogenConfig(
-                        new double[]{3 * 24 * 60 * 60 * 1000, 8 * 60 * 60 * 1000},
-                        new double[]{7 * 24 * 60 * 60 * 1000, 8 * 60 * 60 * 1000},
-                        new double[]{330 * 24 * 60 * 60 * 1000f, 90 * 24 * 60 * 60 * 1000f},
-                        new double[]{3 * 24 * 60 * 60 * 1000, 8 * 60 * 60 * 1000},
-                        new double[]{7 * 24 * 60 * 60 * 1000, 3 * 24 * 60 * 60 * 1000},
-                        new double[]{500, 150},
-                        0.2,
-                        0.75,
-                        0.1
-                ));
+                0.65,
+                0.4,
+                0.75,
+                0.2,
+                0.36,
+                0.01,
+                3 * 24 * 60 * 60 * 1000,
+                8 * 60 * 60 * 1000,
+                7 * 24 * 60 * 60 * 1000,
+                8 * 60 * 60 * 1000,
+                330 * 24 * 60 * 60 * 1000,
+                90 * 24 * 60 * 60 * 1000,
+                3 * 24 * 60 * 60 * 1000,
+                8 * 60 * 60 * 1000,
+                7 * 24 * 60 * 60 * 1000,
+                3 * 24 * 60 * 60 * 1000,
+                500,
+                150,
+                0.15,
+                0.75,
+                0.1,
+                4,
+                2,
+                7,
+                1,
+                17,
+                2,
+                10,
+                2,
+                20,
+                5,
+                60,
+                20,
+                10,
+                2,
+                20,
+                5,
+                60,
+                10,
+                173,
+                25,
+                20,
+                5,
+                60,
+                10,
+                300,
+                150,
+                0.7,
+                0.9999);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json = null;
@@ -59,8 +96,7 @@ public class GameController {
 
         CreateGameClientResponse response = new CreateGameClientResponse(
                 createGamePacket.id(),
-                EpidemicSimApiServerApplication.SERVER_UUID.toString()
-        );
+                EpidemicSimApiServerApplication.SERVER_UUID.toString());
         String responseJson = null;
         try {
             responseJson = objectMapper.writeValueAsString(response);
