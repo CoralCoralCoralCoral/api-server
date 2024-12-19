@@ -52,7 +52,5 @@ public record CreateGamePacket(
                 double test_capacity_mean,
                 double test_capacity_sd,
                 double test_sensitivity,
-                double test_specificity
-
-) {
+                double test_specificity) {
 }
