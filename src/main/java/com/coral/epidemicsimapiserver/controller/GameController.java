@@ -3,7 +3,7 @@ package com.coral.epidemicsimapiserver.controller;
 import com.coral.epidemicsimapiserver.EpidemicSimApiServerApplication;
 import com.coral.epidemicsimapiserver.repository.CreateGameClientResponse;
 import com.coral.epidemicsimapiserver.repository.CreateGamePacket;
-import com.coral.epidemicsimapiserver.repository.PathogenConfig;
+import com.coral.epidemicsimapiserver.repository.CreateGameRequest;
 import com.coral.epidemicsimapiserver.configuration.RabbitMQConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,10 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/game")
@@ -25,22 +24,8 @@ public class GameController {
     RabbitTemplate rabbitTemplate;
 
     @PostMapping("/create")
-    public ResponseEntity<String> createGame() {
-        CreateGamePacket createGamePacket = new CreateGamePacket(
-                UUID.randomUUID().toString(),
-                15 * 60 * 1000,
-                150000,
-                new PathogenConfig(
-                        new double[]{3 * 24 * 60 * 60 * 1000, 8 * 60 * 60 * 1000},
-                        new double[]{7 * 24 * 60 * 60 * 1000, 8 * 60 * 60 * 1000},
-                        new double[]{330 * 24 * 60 * 60 * 1000f, 90 * 24 * 60 * 60 * 1000f},
-                        new double[]{3 * 24 * 60 * 60 * 1000, 8 * 60 * 60 * 1000},
-                        new double[]{7 * 24 * 60 * 60 * 1000, 3 * 24 * 60 * 60 * 1000},
-                        new double[]{500, 150},
-                        0.2,
-                        0.75,
-                        0.1
-                ));
+    public ResponseEntity<String> createGame(@RequestBody CreateGameRequest createGameRequest) {
+        CreateGamePacket createGamePacket = createGameRequest.toCreateGamePacket();
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json = null;
@@ -59,8 +44,7 @@ public class GameController {
 
         CreateGameClientResponse response = new CreateGameClientResponse(
                 createGamePacket.id(),
-                EpidemicSimApiServerApplication.SERVER_UUID.toString()
-        );
+                EpidemicSimApiServerApplication.SERVER_UUID.toString());
         String responseJson = null;
         try {
             responseJson = objectMapper.writeValueAsString(response);
